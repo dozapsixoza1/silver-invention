@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лично для Дины</title>
+    <style>
+        /* Базовые стили */
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden; /* Скрываем горизонтальную прокрутку от падающих элементов */
+        }
+
+        /* Контейнер для падающих элементов (фон) */
+        #falling-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Чтобы элементы не мешали кликать */
+            z-index: 1;
+        }
+
+        /* Стили для падающей частицы */
+        .falling-item {
+            position: absolute;
+            top: -50px;
+            color: #e63946;
+            font-weight: bold;
+            user-select: none;
+            text-shadow: 0 0 5px rgba(230, 57, 70, 0.3);
+        }
+
+        /* Анимация падения */
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* ЭКРАН 1: Вступительный (Закрытая открытка) */
+        #intro-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .intro-title {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #888;
+            letter-spacing: 2px;
+        }
+
+        /* Кнопка открытия */
+        .open-button {
+            background: linear-gradient(145deg, #800020, #b30000);
+            color: white;
+            border: 2px solid #4a0010;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(230, 57, 70, 0.6);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: pulse-btn 2s infinite;
+        }
+
+        .open-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(230, 57, 70, 0.9);
+        }
+
+        @keyframes pulse-btn {
+            0% { box-shadow: 0 0 30px rgba(230, 57, 70, 0.6); }
+            50% { box-shadow: 0 0 50px rgba(230, 57, 70, 0.8), 0 0 10px rgba(230, 57, 70, 0.8) inset; }
+            100% { box-shadow: 0 0 30px rgba(230, 57, 70, 0.6); }
+        }
+
+        /* ЭКРАН 2: Открытка со стихом (Изначально скрыт) */
+        #card-container {
+            display: none; /* Скрыто по умолчанию */
+            opacity: 0;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 5;
+            transform: scale(0.9);
+            transition: opacity 1s ease-in, transform 1s ease-out;
+        }
+
+        /* Стили самой карточки (те же, что и раньше, но чуть доработаны) */
+        .card-content {
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(100, 0, 20, 0.4);
+            border: 1px solid #3a0010;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: #e63946;
+            font-size: 2.8em;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(230, 57, 70, 0.6);
+        }
+        .subtitle {
+            color: #888;
+            font-style: italic;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .poem {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #e0e0e0;
+        }
+        .poem p { margin-bottom: 25px; }
+        .highlight { color: #ff4d5a; font-weight: bold; }
+        .signature {
+            margin-top: 40px;
+            font-size: 1.5em;
+            font-style: italic;
+            color: #ff4d5a;
+            border-top: 2px solid #333;
+            padding-top: 20px;
+        }
+        .heart-pulse {
+            display: inline-block;
+            animation: heartbeat 1.2s infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15%, 45% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="falling-container"></div>
+
+    <div id="intro-screen">
+        <div class="intro-title">Вам послание...</div>
+        <button class="open-button" onclick="openCard()">Открыть 🖤</button>
+    </div>
+
+    <div id="card-container">
+        <div class="card-content">
+            <h1>Моей <span class="highlight">Дине</span></h1>
+            <div class="subtitle">От того, кто отдал ей всё без остатка</div>
+            
+            <div class="poem">
+                <p>
+                    Дина, ты — пламя, сжигаешь дотла,<br>
+                    В сердце моём лишь твой образ и имя.<br>
+                    Я — твой Егор, я — Каратель из сна,<br>
+                    Но пред тобой я сдаюсь, став невинным.
+                </p>
+                <p>
+                    Губы твои — как дурманящий яд,<br>
+                    Взгляд твой — как бездна, зовущая к краю.<br>
+                    Я за тебя разорву даже ад,<br>
+                    Только с тобой я живу и сгораю.
+                </p>
+                <p>
+                    Дина, мой свет и мой ласковый рок,<br>
+                    Я пред тобой опускаю оружие.<br>
+                    Каждый мой вздох — между нами мосток,<br>
+                    Ты — всё, что мне в этой вечности нужно.
+                </p>
+            </div>
+
+            <div class="signature">
+                Твой Егор Каратель <span class="heart-pulse">❤️</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isRaining = false;
+
+        function openCard() {
+            // Скрываем вступительный экран
+            const intro = document.getElementById('intro-screen');
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.display = 'none';
+            }, 800);
+
+            // Показываем открытку
+            const card = document.getElementById('card-container');
+            card.style.display = 'flex';
+            // Небольшая задержка перед тем, как проявить CSS переходы
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            }, 100);
+            
+            // Запускаем дождь из имен, если еще не запущен
+            if (!isRaining) {
+                isRaining = true;
+                startFallingRain();
+            }
+        }
+
+        function createFallingElement() {
+            const container = document.getElementById('falling-container');
+            const element = document.createElement('div');
+            element.classList.add('falling-item');
+            
+            // Текст, который падает
+            element.innerHTML = 'Дина ❤️';
+
+            // Рандомная позиция по горизонтали
+            element.style.left = Math.random() * 100 + 'vw';
+            // Рандомный размер шрифта (от 14px до 30px)
+            const fontSize = Math.random() * 16 + 14;
+            element.style.fontSize = fontSize + 'px';
+            // Рандомная прозрачность
+            element.style.opacity = Math.random() * 0.5 + 0.3;
+            
+            // Рандомная длительность падения (от 3 до 8 секунд)
+            const duration = Math.random() * 5 + 3;
+            element.style.animation = `fall ${duration}s linear forwards`;
+
+            container.appendChild(element);
+
+            // Удаляем элемент после того, как он упал, чтобы не грузить память
+            setTimeout(() => {
+                element.remove();
+            }, duration * 1000);
+        }
+
+        function startFallingRain() {
+            // Создаем новый падающий элемент каждые 300мс
+            setInterval(createFallingElement, 300);
+        }
+    </script>
+</body>
+</html>
